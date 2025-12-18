@@ -1,3 +1,7 @@
+# Projet Ticketing - Architecture Logicielle
+
+**Étudiant** : Amélie JULIEN
+
 # Ticketing Starter 🎫 Module R4.01 Architecture logicielle (BUT2)
 
 Année 2025/2026 - Enseignant : Marc Ennaji (marc.ennaji@univ-rennes.fr)
