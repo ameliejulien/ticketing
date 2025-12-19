@@ -56,5 +56,5 @@ class Ticket:
 
     def __post_init__(self):
         """S'exécute automatiquement après la création."""
-        if not self.username:
+        if not self.title:
             raise ValueError("Ticket title cannot be empty")
