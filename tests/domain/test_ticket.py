@@ -8,30 +8,31 @@ Ils doivent passer sans aucune dépendance externe (pas de DB, pas d'API).
 Lancez-les avec : pytest tests/domain/
 """
 
-# from src.domain.status import Status
+from src.domain.status import Status
+
 # from src.domain.ticket import Ticket
-# from src.domain.user import User
+from src.domain.user import User
 
 # ==========================================================================
 # EXEMPLES DE TESTS À ÉCRIRE (décommentez et adaptez)
 # ==========================================================================
 
 
-# def test_status_values_exist():
-#     """Vérifie que les 4 statuts existent."""
-#     assert Status.OPEN.value == "Open"
-#     assert Status.IN_PROGRESS.value == "In_progress"
-#     assert Status.RESOLVED.value == "Resolved"
-#     assert Status.CLOSED.value == "Closed"
+def test_status_values_exist():
+    """Vérifie que les 4 statuts existent."""
+    assert Status.OPEN.value == "Open"
+    assert Status.IN_PROGRESS.value == "In_progress"
+    assert Status.RESOLVED.value == "Resolved"
+    assert Status.CLOSED.value == "Closed"
 
 
-# def test_user_creation():
-#     """Vérifie la création d'un utilisateur."""
-#     user = User(id="u1", username="alice")
-#     assert user.id == "u1"
-#     assert user.username == "alice"
-#     assert user.is_agent == False
-#     assert user.is_admin == False
+def test_user_creation():
+    """Vérifie la création d'un utilisateur."""
+    user = User(id="u1", username="alice")
+    assert user.id == "u1"
+    assert user.username == "alice"
+    assert not user.is_agent
+    assert not user.is_admin
 
 
 # def test_ticket_creation():

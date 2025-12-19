@@ -5,7 +5,7 @@ Entité Ticket (ticket de support).
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
-from src.domain.status import Status
+from status import Status
 
 
 def _now_utc() -> datetime:
@@ -35,8 +35,8 @@ class Ticket:
     status: Status = Status.OPEN
     creator_id: str
     assignee_id: str = None
-    created_at = _now_utc()
-    updated_at = _now_utc()
+    created_at: datetime = _now_utc()
+    updated_at: datetime = _now_utc()
 
     def assign(self, user_id: str):
         """Assigne le ticket à un agent."""
