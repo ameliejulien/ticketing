@@ -8,23 +8,21 @@ Ils doivent passer sans aucune dépendance externe (pas de DB, pas d'API).
 Lancez-les avec : pytest tests/domain/
 """
 
-# TODO (TD1): Décommenter ces imports une fois les classes implémentées
-# import pytest
 # from src.domain.status import Status
 # from src.domain.ticket import Ticket
 # from src.domain.user import User
-
 
 # ==========================================================================
 # EXEMPLES DE TESTS À ÉCRIRE (décommentez et adaptez)
 # ==========================================================================
 
+
 # def test_status_values_exist():
 #     """Vérifie que les 4 statuts existent."""
-#     assert Status.OPEN.value == "open"
-#     assert Status.IN_PROGRESS.value == "in_progress"
-#     assert Status.RESOLVED.value == "resolved"
-#     assert Status.CLOSED.value == "closed"
+#     assert Status.OPEN.value == "Open"
+#     assert Status.IN_PROGRESS.value == "In_progress"
+#     assert Status.RESOLVED.value == "Resolved"
+#     assert Status.CLOSED.value == "Closed"
 
 
 # def test_user_creation():
@@ -32,6 +30,8 @@ Lancez-les avec : pytest tests/domain/
 #     user = User(id="u1", username="alice")
 #     assert user.id == "u1"
 #     assert user.username == "alice"
+#     assert user.is_agent == False
+#     assert user.is_admin == False
 
 
 # def test_ticket_creation():

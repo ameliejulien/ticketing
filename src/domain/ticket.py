@@ -1,12 +1,11 @@
 """
 Entité Ticket (ticket de support).
-
-TODO (TD01) : Compléter cette classe avec les attributs et méthodes nécessaires.
-C'est l'entité centrale du domaine métier.
 """
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+
+from src.domain.status import Status
 
 
 def _now_utc() -> datetime:
@@ -19,37 +18,38 @@ class Ticket:
     """
     Entité principale du domaine : un ticket de support.
 
-    TODO: Compléter cette classe avec :
-    1. Les attributs obligatoires (id, title, description, status...)
-    2. Les attributs optionnels (assignee, dates...)
-    3. Les méthodes métier (assign, close...)
-
-    Pensez aux règles métier (invariants) :
-    - Un ticket doit avoir un titre non vide
-    - Un ticket fermé ne peut plus être modifié
-    - etc.
-
     Attributs:
         id: Identifiant unique du ticket
         title: Titre court décrivant le problème
         description: Description détaillée
-        # TODO: Ajouter les autres attributs
+        status: Status du ticket (OPEN par défaut)
+        creator_id: Identifiant du créateur du ticket
+        assignee_id: Identifiant de la personne s'occupant du ticket
+        created_at: Date et heure de création du ticket
+        updated_at: Date et heure de dernière modification du ticket
     """
 
     id: str
     title: str
     description: str
-    # TODO: Ajouter les attributs manquants
-    # - status (avec valeur par défaut Status.OPEN)
-    # - creator_id
-    # - assignee_id (optionnel)
-    # - created_at, updated_at (dates)
+    status: Status = Status.OPEN
+    creator_id: str
+    assignee_id: str = None
+    created_at = _now_utc()
+    updated_at = _now_utc()
 
-    # TODO: Ajouter les méthodes métier
-    # def assign(self, user_id: str):
-    #     """Assigne le ticket à un agent."""
-    #     pass
-    #
-    # def close(self):
-    #     """Ferme le ticket."""
-    #     pass
+    def assign(self, user_id: str):
+        """Assigne le ticket à un agent."""
+        if self.status == Status.CLOSED:
+            raise ValueError("Un ticket fermé ne peut plus être modifié")
+        if not self.title:
+            raise ValueError("Un ticket doit avoir un titre non vide")
+        self.assignee_id = user_id
+        self.updated_at = _now_utc()
+
+    def close(self):
+        """Ferme le ticket."""
+        if self.status == Status.CLOSED:
+            raise ValueError("Le ticket est fermé")
+        self.status = Status.CLOSED
+        self.updated_at = _now_utc()
