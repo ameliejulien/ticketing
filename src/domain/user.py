@@ -22,8 +22,7 @@ class User:
     is_agent: bool = False
     is_admin: bool = False
 
-
-def __post_init__(self):
-    """S'exécute automatiquement après la création."""
-    if not self.username:
-        raise ValueError("Username cannot be empty")
+    def __post_init__(self):
+        """S'exécute automatiquement après la création."""
+        if not self.username:
+            raise ValueError("Username cannot be empty")

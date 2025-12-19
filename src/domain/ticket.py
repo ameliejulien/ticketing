@@ -53,3 +53,8 @@ class Ticket:
             raise ValueError("Le ticket est fermé")
         self.status = Status.CLOSED
         self.updated_at = _now_utc()
+
+    def __post_init__(self):
+        """S'exécute automatiquement après la création."""
+        if not self.username:
+            raise ValueError("Ticket title cannot be empty")
