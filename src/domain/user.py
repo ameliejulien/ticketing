@@ -18,10 +18,12 @@ class User:
 
     Attributes:
         id: Identifiant unique de l'utilisateur
-        # TODO: Ajouter d'autres attributs
+        username: Nom d'affichage de l'utilisateur
+        is_agent: L'utilisateur peut traiter des tickets ?
+        is_admin: L'utilisateur a des droits administrateur ?
     """
 
     id: str
-    # TODO: Compléter avec les attributs manquants
-    # - username ?
-    # - is_agent ? is_admin ?
+    username: str
+    is_agent: bool = False
+    is_admin: bool = False
