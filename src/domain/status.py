@@ -19,6 +19,7 @@ class Status(Enum):
     OPEN -> IN_PROGRESS -> RESOLVED -> CLOSED
     """
 
-    # TODO: Ajouter les statuts ici
-    # Exemple : OPEN = "open"
-    pass
+    OPEN = "Open"
+    IN_PROGRESS = "In_progress"
+    RESOLVED = "Resolved"
+    CLOSED = "Closed"
