@@ -13,10 +13,6 @@ from src.domain.status import Status
 # from src.domain.ticket import Ticket
 from src.domain.user import User
 
-# ==========================================================================
-# EXEMPLES DE TESTS À ÉCRIRE (décommentez et adaptez)
-# ==========================================================================
-
 
 def test_status_values_exist():
     """Vérifie que les 4 statuts existent."""
