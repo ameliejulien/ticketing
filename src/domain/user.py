@@ -1,7 +1,3 @@
-"""
-Entité User (utilisateur du système).
-"""
-
 from dataclasses import dataclass
 
 
