@@ -31,6 +31,20 @@ class Ticket:
         self.status = Status.CLOSED
         self.updated_at = _now_utc()
 
+    def open(self):
+        if self.status == Status.CLOSED:
+            raise ValueError("Cannot open a closed ticket")
+        self.status = Status.OPEN
+        self.updated_at = _now_utc()
+
     def __post_init__(self):
         if not self.title:
             raise ValueError("Ticket title cannot be empty")
+        if not self.description:
+            raise ValueError("Ticket description cannot be empty.")
+        if self.status not in [Status.OPEN, Status.CLOSED]:
+            raise ValueError("Ticket status must be valid.")
+        if self.created_at is None:
+            raise ValueError("Ticket creation date cannot be empty.")
+        if self.updated_at is None:
+            raise ValueError("Ticket update date cannot be empty.")

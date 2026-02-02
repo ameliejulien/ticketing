@@ -101,7 +101,7 @@ def test_cannot_close_already_closed_ticket():
 
 
 def test_create_ticket_with_valid_values():
-    """Règle : Un ticket ne peut pas être créé avec des valeurs invalides."""
+    """Règle : Un ticket peut être créé avec des valeurs valides."""
     ticket = Ticket(
         id="t1", title="Bug valeur", description="Valeur invalide", creator_id="user1"
     )
@@ -112,7 +112,7 @@ def test_create_ticket_with_valid_values():
 
 
 def test_assign_ticket_to_agent():
-    """Règle : Un ticket ouvert ne peut pas ne pas être assigné à un agent."""
+    """Règle : Un ticket ouvert peut être assigné à un agent."""
     ticket = Ticket(
         id="1",
         title="Bug agent",
@@ -124,7 +124,7 @@ def test_assign_ticket_to_agent():
 
 
 def test_start_ticket_transition_to_in_progress():
-    """Règle : Un ticket non assigné ne peut pas être démarré."""
+    """Règle : Un ticket assigné peut être démarré."""
     ticket = Ticket(
         id="1",
         title="Bug transition",
@@ -136,7 +136,7 @@ def test_start_ticket_transition_to_in_progress():
 
 
 def test_create_user_with_valid_username():
-    """Règle : Un utilisateur ne peut pas être créé avec un username invalide."""
+    """Règle : Un utilisateur peut être créé avec un username valide."""
     user = User(id="user_123", username="validuser")
     assert user.username == "validuser"
     assert not user.is_agent
@@ -144,7 +144,7 @@ def test_create_user_with_valid_username():
 
 
 def test_ticket_status_on_creation():
-    """Règle : Un ticket ne peut pas ne pas avoir le statut OPEN à sa création."""
+    """Règle : Un ticket a le statut OPEN à sa création."""
     ticket = Ticket(
         id="1",
         title="Bug ouverte",
@@ -152,6 +152,11 @@ def test_ticket_status_on_creation():
         creator_id="user_123",
     )
     assert ticket.status == Status.OPEN
+
+
+# ==========================
+# | TESTS DES CAS D'ERREUR |
+# ==========================
 
 
 def test_user_roles():
@@ -164,15 +169,56 @@ def test_user_roles():
     assert user2.is_admin is True
 
 
-# def test_closed_ticket_cannot_be_opened():
-#     """Règle : Un ticket fermé ne peut plus être ouvert."""
+def test_closed_ticket_cannot_be_opened():
+    """Règle : Un ticket fermé ne peut plus être ouvert."""
+    ticket = Ticket(
+        id="t1",
+        title="Bug connexion",
+        description="Impossible de se connecter",
+        creator_id="user1",
+    )
+    ticket.close()
+    with pytest.raises(ValueError, match="Cannot open a closed ticket"):
+        ticket.open()  # Cela devrait lever une exception
 
-#     ticket = Ticket(
-#         id="t1",
-#         title="Bug connexion",
-#         description="Impossible de se connecter",
-#         creator_id="user1",
-#     )
-#     ticket.close()
-#     with pytest.raises(ValueError, match="Cannot open a closed ticket"):
-#         ticket.open() # Cela devrait lever une exception
+
+def test_ticket_description_cannot_be_empty():
+    """Règle : Un ticket doit avoir une description."""
+    with pytest.raises(ValueError, match="Ticket description cannot be empty."):
+        Ticket(id="t1", title="Bug connexion", description="", creator_id="user1")
+
+
+def test_ticket_status_must_be_valid():
+    """Règle : Un ticket doit avoir un statut valide."""
+    with pytest.raises(ValueError, match="Ticket status must be valid."):
+        Ticket(
+            id="t1",
+            title="Bug connexion",
+            description="Impossible de se connecter",
+            creator_id="user1",
+            status="INVALID_STATUS",
+        )
+
+
+def test_ticket_creation_date_cannot_be_empty():
+    """Règle : Un ticket doit avoir une date de création non vide."""
+    with pytest.raises(ValueError, match="Ticket creation date cannot be empty."):
+        Ticket(
+            id="t1",
+            title="Bug connexion",
+            description="Impossible de se connecter",
+            creator_id="user1",
+            created_at=None,
+        )
+
+
+def test_ticket_update_date_cannot_be_empty():
+    """Règle : Un ticket doit avoir une date de mise à jour non vide."""
+    with pytest.raises(ValueError, match="Ticket update date cannot be empty."):
+        Ticket(
+            id="t1",
+            title="Bug connexion",
+            description="Impossible de se connecter",
+            creator_id="user1",
+            updated_at=None,
+        )
