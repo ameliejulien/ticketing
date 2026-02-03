@@ -31,6 +31,7 @@ def test_ticket_creation():
         title="Bug connexion",
         description="Impossible de se connecter",
         creator_id="user1",
+        priority="Basse",
     )
     assert ticket.status == Status.OPEN
     assert ticket.assignee_id is None
@@ -38,14 +39,18 @@ def test_ticket_creation():
 
 def test_ticket_assign():
     """Vérifie l'assignation d'un ticket."""
-    ticket = Ticket(id="t1", title="Test", description="desc", creator_id="u1")
+    ticket = Ticket(
+        id="t1", title="Test", description="desc", creator_id="u1", priority="Basse"
+    )
     ticket.assign("agent1")
     assert ticket.assignee_id == "agent1"
 
 
 def test_ticket_close():
     """Vérifie la fermeture d'un ticket."""
-    ticket = Ticket(id="t1", title="Test", description="desc", creator_id="u1")
+    ticket = Ticket(
+        id="t1", title="Test", description="desc", creator_id="u1", priority="Basse"
+    )
     ticket.close()
     assert ticket.status == Status.CLOSED
 
@@ -58,7 +63,13 @@ def test_ticket_close():
 def test_ticket_title_cannot_be_empty():
     """Règle : Un ticket doit avoir un titre non vide."""
     with pytest.raises(ValueError, match="Ticket title cannot be empty"):
-        Ticket(id="t1", title="", description="Une description", creator_id="user1")
+        Ticket(
+            id="t1",
+            title="",
+            description="Une description",
+            creator_id="user1",
+            priority="Basse",
+        )
 
 
 def test_user_username_cannot_be_empty():
@@ -74,6 +85,7 @@ def test_cannot_assign_closed_ticket():
         title="Bug connexion",
         description="Impossible de se connecter",
         creator_id="user1",
+        priority="Basse",
         status=Status.CLOSED,
     )
     with pytest.raises(ValueError, match="Un ticket fermé ne peut plus être modifié"):
@@ -87,6 +99,7 @@ def test_cannot_close_already_closed_ticket():
         title="Bug connexion",
         description="Impossible de se connecter",
         creator_id="user1",
+        priority="Basse",
     )
     # Fermer le ticket
     ticket.close()
@@ -103,7 +116,11 @@ def test_cannot_close_already_closed_ticket():
 def test_create_ticket_with_valid_values():
     """Règle : Un ticket peut être créé avec des valeurs valides."""
     ticket = Ticket(
-        id="t1", title="Bug valeur", description="Valeur invalide", creator_id="user1"
+        id="t1",
+        title="Bug valeur",
+        description="Valeur invalide",
+        creator_id="user1",
+        priority="Basse",
     )
     assert ticket.title == "Bug valeur"
     assert ticket.status == Status.OPEN
@@ -118,6 +135,7 @@ def test_assign_ticket_to_agent():
         title="Bug agent",
         description="Assignation à ticket ouvert",
         creator_id="user_123",
+        priority="Basse",
     )
     ticket.assign("agent_123")
     assert ticket.assignee_id == "agent_123"
@@ -130,6 +148,7 @@ def test_start_ticket_transition_to_in_progress():
         title="Bug transition",
         description="Démarrer ticket ouvert",
         creator_id="user_123",
+        priority="Basse",
     )
     ticket.status = Status.IN_PROGRESS
     assert ticket.status == Status.IN_PROGRESS
@@ -150,6 +169,7 @@ def test_ticket_status_on_creation():
         title="Bug ouverte",
         description="Statut du ticket",
         creator_id="user_123",
+        priority="Basse",
     )
     assert ticket.status == Status.OPEN
 
@@ -176,6 +196,7 @@ def test_closed_ticket_cannot_be_opened():
         title="Bug connexion",
         description="Impossible de se connecter",
         creator_id="user1",
+        priority="Basse",
     )
     ticket.close()
     with pytest.raises(ValueError, match="Cannot open a closed ticket"):
@@ -185,7 +206,13 @@ def test_closed_ticket_cannot_be_opened():
 def test_ticket_description_cannot_be_empty():
     """Règle : Un ticket doit avoir une description."""
     with pytest.raises(ValueError, match="Ticket description cannot be empty."):
-        Ticket(id="t1", title="Bug connexion", description="", creator_id="user1")
+        Ticket(
+            id="t1",
+            title="Bug connexion",
+            description="",
+            creator_id="user1",
+            priority="Basse",
+        )
 
 
 def test_ticket_status_must_be_valid():
@@ -196,6 +223,7 @@ def test_ticket_status_must_be_valid():
             title="Bug connexion",
             description="Impossible de se connecter",
             creator_id="user1",
+            priority="Basse",
             status="INVALID_STATUS",
         )
 
@@ -208,6 +236,7 @@ def test_ticket_creation_date_cannot_be_empty():
             title="Bug connexion",
             description="Impossible de se connecter",
             creator_id="user1",
+            priority="Basse",
             created_at=None,
         )
 
@@ -220,5 +249,6 @@ def test_ticket_update_date_cannot_be_empty():
             title="Bug connexion",
             description="Impossible de se connecter",
             creator_id="user1",
+            priority="Basse",
             updated_at=None,
         )

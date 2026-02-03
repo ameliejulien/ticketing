@@ -14,9 +14,10 @@ class DomainError(Exception):
     Exemple: TicketNotFoundError, InvalidStatusTransitionError, etc.
     """
 
-    class TicketNotFoundError(Exception):
-        """Levée quand un ticket demandé n'existe pas."""
+    pass
 
-        pass
+
+class TicketNotFoundError(Exception):
+    """Levée quand un ticket demandé n'existe pas."""
 
     pass

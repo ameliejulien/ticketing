@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
+from src.domain.priority import Priority
 from src.domain.status import Status
 
 
@@ -15,6 +16,7 @@ class Ticket:
     title: str
     description: str
     creator_id: str
+    priority: Priority
     status: Status = Status.OPEN
     assignee_id: str = None
     created_at: datetime = _now_utc

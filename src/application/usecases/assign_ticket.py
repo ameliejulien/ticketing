@@ -37,7 +37,7 @@ class AssignTicketUseCase:
         Raises:
             TicketNotFoundError: Si le ticket n'existe pas
         """
-        ticket = self.ticket_repo.find_by_id(ticket_id)
+        ticket = self.ticket_repo.get(ticket_id)
 
         if ticket is None:
             raise TicketNotFoundError(f"Ticket with ID {ticket_id} not found.")
