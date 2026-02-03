@@ -10,9 +10,8 @@ au redémarrage de l'application.
 
 from typing import Dict, List, Optional
 
-# TODO: Décommenter une fois la classe Ticket implémentée (TD01)
-# from src.domain.ticket import Ticket
-from src.ports.ticket_repository import Ticket, TicketRepository
+from src.domain.ticket import Ticket
+from src.ports.ticket_repository import TicketRepository
 
 
 class InMemoryTicketRepository(TicketRepository):
@@ -25,9 +24,9 @@ class InMemoryTicketRepository(TicketRepository):
 
     def __init__(self):
         """Initialise le stockage avec un dictionnaire vide."""
-        self.storage: Dict[str, Ticket] = {}
+        self._tickets: Dict[str, Ticket] = {}
 
-    def save(self, ticket: Ticket) -> None:
+    def save(self, ticket: Ticket) -> Ticket:
         """
         Sauvegarde un ticket dans le dictionnaire.
 
@@ -36,7 +35,8 @@ class InMemoryTicketRepository(TicketRepository):
         Args:
             ticket: Le ticket à sauvegarder
         """
-        self.storage[ticket.id] = ticket
+        self._tickets[ticket.id] = ticket
+        return ticket
 
     def get(self, ticket_id: str) -> Optional[Ticket]:
         """
@@ -48,7 +48,7 @@ class InMemoryTicketRepository(TicketRepository):
         Returns:
             Le ticket trouvé, ou None s'il n'existe pas
         """
-        return self.storage.get(ticket_id)
+        return self._tickets.get(ticket_id)
 
     def list(self) -> List[Ticket]:
         """
@@ -57,4 +57,13 @@ class InMemoryTicketRepository(TicketRepository):
         Returns:
             Liste de tous les tickets
         """
-        return list(self.storage.values())
+        return list(self._tickets.values())
+
+    def clear(self):
+        """
+        Vide le repository (utile pour les tests).
+
+        Note: Cette méthode n'est pas dans le port, elle est spécifique
+        à l'implémentation InMemory pour faciliter les tests.
+        """
+        self._tickets.clear()
