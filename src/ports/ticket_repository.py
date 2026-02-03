@@ -7,13 +7,9 @@ l'implémentation concrète (mémoire, SQLite, PostgreSQL, etc.).
 """
 
 from abc import ABC, abstractmethod
+from typing import List, Optional
 
-# TODO: Décommenter une fois la classe Ticket implémentée (TD01)
-# from src.domain.ticket import Ticket
-# Placeholder temporaire pour éviter les erreurs d'import
-from typing import Any, List, Optional
-
-Ticket = Any  # À supprimer après TD01
+from src.domain.ticket import Ticket
 
 
 class TicketRepository(ABC):
@@ -26,12 +22,15 @@ class TicketRepository(ABC):
     """
 
     @abstractmethod
-    def save(self, ticket: Ticket) -> None:
+    def save(self, ticket: Ticket) -> Ticket:
         """
         Sauvegarde un ticket (création ou mise à jour).
 
         Args:
             ticket: Le ticket à sauvegarder
+
+        Returns:
+            Le ticket sauvegardé (avec éventuellement un ID généré)
         """
         raise NotImplementedError
 
