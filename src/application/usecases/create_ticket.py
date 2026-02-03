@@ -7,9 +7,9 @@ Il orchestre le domaine et les ports, sans dépendre d'aucune implémentation co
 
 import uuid
 
-# TODO: Décommenter une fois la classe Ticket implémentée (TD01)
-# from src.domain.ticket import Ticket
-from src.ports.ticket_repository import Ticket, TicketRepository
+from src.domain.priority import Priority
+from src.domain.ticket import Ticket
+from src.ports.ticket_repository import TicketRepository
 
 
 class CreateTicketUseCase:
@@ -52,6 +52,7 @@ class CreateTicketUseCase:
             title=title,
             description=description,
             creator_id=creator_id,
+            priority=Priority.MEDIUM,
         )
-        self.ticket_repo.save(ticket)
-        return ticket
+        updated_ticket = self.ticket_repo.save(ticket)
+        return updated_ticket
