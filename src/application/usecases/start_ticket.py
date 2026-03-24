@@ -11,7 +11,7 @@ class StartTicketUseCase:
 
     def execute(self, ticket_id: str, agent_id: str) -> Ticket:
         # Récupérer le ticket
-        ticket = self.ticket_repo.get_by_id(ticket_id)
+        ticket = self.ticket_repo.get(ticket_id)
 
         # Vérifier l'existence du ticket
         if ticket is None:
