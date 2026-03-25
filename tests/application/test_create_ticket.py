@@ -62,3 +62,22 @@ class TestCreateTicketUseCase:
         assert ticket1.id != ticket2.id
         all_tickets = self.repo.list()
         assert len(all_tickets) == 2
+
+    def test_create_ticket_with_sqlite(self, sqlite_ticket_repo):
+        """Test CreateTicket avec SQLite (au lieu de InMemory)."""
+        repo = sqlite_ticket_repo
+        use_case = CreateTicketUseCase(repo)
+        
+        title="Bug critique",
+        description="Le système plante",
+        creator_id="user1"
+
+        ticket = use_case.execute(title, description, creator_id)
+
+        assert ticket.id is not None
+        assert ticket.status == Status.OPEN
+        
+        # Vérifier persistance : récupérer depuis la DB
+        retrieved = repo.get_by_id(ticket.id)
+        assert retrieved.title == title
+        assert retrieved.creator_id == creator_id

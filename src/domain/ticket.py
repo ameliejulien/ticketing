@@ -22,7 +22,7 @@ class Ticket:
     title: str
     description: str
     creator_id: str
-    priority: Priority
+    priority: Priority = Priority.MEDIUM
     status: Status = Status.OPEN
     assignee_id: str = None
     created_at: datetime = _now_utc
@@ -75,6 +75,9 @@ class Ticket:
             )
         self.status = new_status
         self.updated_at = updated_at
+
+    def _restore_status_from_db(self, status: Status) -> None:
+        self.status = status
 
     def __post_init__(self):
         if not self.title:

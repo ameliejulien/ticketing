@@ -8,6 +8,7 @@ from src.adapters.db.ticket_repository_inmemory import InMemoryTicketRepository
 from src.application.usecases.assign_ticket import AssignTicketUseCase
 from src.application.usecases.create_ticket import CreateTicketUseCase
 from src.domain.exceptions import TicketNotFoundError
+from src.domain.status import Status
 
 
 class TestAssignTicketUseCase:
@@ -61,3 +62,25 @@ class TestAssignTicketUseCase:
         saved_ticket = self.repo.get(ticket.id)
         assert saved_ticket.assignee_id is not None
         assert saved_ticket.assignee_id == agent_id
+
+    def test_assign_ticket_with_sqlite(self, sqlite_ticket_repo):
+        """Créer puis assigner un ticket en utilisant le repo SQLite."""
+        repo = sqlite_ticket_repo
+        create_uc = CreateTicketUseCase(repo)
+        assign_uc = AssignTicketUseCase(repo)
+
+        ticket = create_uc.execute(
+            title="Nouvelle fonctionnalité",
+            description="Ajouter export CSV",
+            creator_id="user-123"
+        )
+
+        # Assigner à un utilisateur
+        assigned = assign_uc.execute(ticket_id=ticket.id, assignee_id="user-123")
+
+        assert assigned.assignee_id == "user-123"
+        assert assigned.status == Status.IN_PROGRESS
+
+        # Lire depuis la DB pour confirmer
+        retrieved = repo.get_by_id(ticket.id)
+        assert retrieved.assignee_id == "user-123"
