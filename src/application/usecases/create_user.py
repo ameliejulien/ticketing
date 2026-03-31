@@ -6,6 +6,7 @@ et le port UserRepository, sans dépendre d'une implémentation concrète.
 """
 
 import uuid
+from typing import Optional
 
 from src.domain.user import User
 from src.ports.user_repository import UserRepository
@@ -59,3 +60,12 @@ class CreateUserUseCase:
         self.user_repo.save(user)
 
         return user
+
+    def find_agents(self) -> list[User]:
+        # SELECT * FROM users WHERE is_agent = 1
+        pass
+
+
+class GetUserByUsernameUseCase:
+    def execute(self, username: str) -> Optional[User]:
+        return self.user_repo.find_by_username(username)

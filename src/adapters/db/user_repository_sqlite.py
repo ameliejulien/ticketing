@@ -105,3 +105,12 @@ class SQLiteUserRepository(UserRepository):
             return users
         finally:
             conn.close()
+
+    def clear(self) -> None:
+        conn = get_connection(self.db_path)
+        try:
+            cur = conn.cursor()
+            cur.execute("DELETE FROM users")
+            conn.commit()
+        finally:
+            conn.close()
