@@ -8,9 +8,8 @@ from .mappers import row_to_ticket, ticket_to_row
 
 
 class SQLiteTicketRepository(TicketRepository):
-    def init(self, db_path: str = "ticketing.db"):
+    def __init__(self, db_path: str = "ticketing.db"):
         self.db_path = db_path
-
 
     def save(self, ticket: Ticket) -> Ticket:
         """
@@ -46,8 +45,7 @@ class SQLiteTicketRepository(TicketRepository):
         close_connection(conn)
         return ticket
 
-
-    def get_by_id(self, ticket_id: str) -> Optional[Ticket]:
+    def get(self, ticket_id: str) -> Optional[Ticket]:
         """
         Récupère un ticket par son id. Retourne None si absent.
         """
@@ -62,8 +60,7 @@ class SQLiteTicketRepository(TicketRepository):
 
         return row_to_ticket(dict(row))
 
-
-    def list_all(self) -> List[Ticket]:
+    def list(self) -> List[Ticket]:
         """
         Liste tous les tickets présents dans la base.
         """

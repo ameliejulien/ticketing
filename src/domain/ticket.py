@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -16,6 +16,9 @@ def _now_utc() -> datetime:
     return datetime.now(timezone.utc)
 
 
+_SENTINEL = object()
+
+
 @dataclass
 class Ticket:
     id: str
@@ -25,9 +28,11 @@ class Ticket:
     priority: Priority = Priority.MEDIUM
     status: Status = Status.OPEN
     assignee_id: str = None
-    created_at: datetime = _now_utc
-    updated_at: datetime = _now_utc
+    created_at: datetime = field(default_factory=_now_utc)
+    updated_at: datetime = field(default_factory=_now_utc)
     started_at: Optional[datetime] = None
+    project_id: Optional[str] = None
+    closed_at: Optional[datetime] = None
 
     ALLOWED_TRANSITIONS = {
         Status.OPEN: [Status.IN_PROGRESS],
@@ -84,7 +89,7 @@ class Ticket:
             raise ValueError("Ticket title cannot be empty")
         if not self.description:
             raise ValueError("Ticket description cannot be empty.")
-        if self.status not in [Status.OPEN, Status.CLOSED]:
+        if not isinstance(self.status, Status):
             raise ValueError("Ticket status must be valid.")
         if self.created_at is None:
             raise ValueError("Ticket creation date cannot be empty.")

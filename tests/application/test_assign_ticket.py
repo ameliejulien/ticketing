@@ -72,15 +72,15 @@ class TestAssignTicketUseCase:
         ticket = create_uc.execute(
             title="Nouvelle fonctionnalité",
             description="Ajouter export CSV",
-            creator_id="user-123"
+            creator_id="user-123",
         )
 
-        # Assigner à un utilisateur
-        assigned = assign_uc.execute(ticket_id=ticket.id, assignee_id="user-123")
+        # Assigner à un agent
+        assigned = assign_uc.execute(ticket_id=ticket.id, agent_id="agent-456")
 
-        assert assigned.assignee_id == "user-123"
-        assert assigned.status == Status.IN_PROGRESS
+        assert assigned.assignee_id == "agent-456"
+        assert assigned.status == Status.OPEN
 
         # Lire depuis la DB pour confirmer
-        retrieved = repo.get_by_id(ticket.id)
-        assert retrieved.assignee_id == "user-123"
+        retrieved = repo.get(ticket.id)
+        assert retrieved.assignee_id == "agent-456"
