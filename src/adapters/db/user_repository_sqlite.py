@@ -106,6 +106,32 @@ class SQLiteUserRepository(UserRepository):
         finally:
             conn.close()
 
+    def find_agents(self) -> list[User]:
+        conn = get_connection(self.db_path)
+        try:
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT id, username, is_agent, is_admin FROM users WHERE is_agent = 1"
+            )
+            rows = cur.fetchall()
+
+            users = []
+            for row in rows:
+                if isinstance(row, sqlite3.Row):
+                    row_dict = {k: row[k] for k in row.keys()}
+                else:
+                    row_dict = {
+                        "id": row[0],
+                        "username": row[1],
+                        "is_agent": row[2],
+                        "is_admin": row[3],
+                    }
+                users.append(row_to_user(row_dict))
+
+            return users
+        finally:
+            conn.close()
+
     def clear(self) -> None:
         conn = get_connection(self.db_path)
         try:
