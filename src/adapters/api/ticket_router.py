@@ -23,6 +23,7 @@ class TicketIn(BaseModel):
 
     title: str
     description: str
+    creator_id: str
 
 
 class TicketOut(BaseModel):
@@ -57,10 +58,7 @@ def get_create_ticket_usecase():
 
 
 @router.post("/", status_code=201, response_model=TicketOut)
-async def create_ticket(
-    payload: TicketIn,
-    # TODO: Ajouter creator_id depuis le contexte d'authentification
-):
+async def create_ticket(payload: TicketIn):
     """
     Crée un nouveau ticket.
 
@@ -70,18 +68,20 @@ async def create_ticket(
     Returns:
         Le ticket créé avec son identifiant et son statut
     """
-    # Exemple de câblage (les étudiants complèteront ceci) :
-    # usecase = get_create_ticket_usecase()
-    # ticket = usecase.execute(
-    #     payload.title, payload.description, creator_id="anonymous"
-    # )
-    # return TicketOut(
-    #     id=ticket.id, title=ticket.title,
-    #     description=ticket.description, status=ticket.status.value
-    # )
 
+    from src.main import get_create_ticket_usecase
+
+    usecase = get_create_ticket_usecase()
+    ticket = usecase.execute(
+        title=payload.title,
+        description=payload.description,
+        creator_id=payload.creator_id,
+    )
     return TicketOut(
-        id="TODO", title=payload.title, description=payload.description, status="open"
+        id=ticket.id,
+        title=ticket.title,
+        description=ticket.description,
+        status=ticket.status.value,
     )
 
 
@@ -93,5 +93,16 @@ async def list_tickets():
     Returns:
         Liste des tickets existants
     """
-    # TODO: appeler le cas d'usage ListTickets
-    return []
+    from src.main import get_list_tickets_usecase
+
+    usecase = get_list_tickets_usecase()
+    tickets = usecase.execute()
+    return [
+        TicketOut(
+            id=ticket.id,
+            title=ticket.title,
+            description=ticket.description,
+            status=ticket.status.value,
+        )
+        for ticket in tickets
+    ]

@@ -32,25 +32,27 @@ class TestHealthCheck:
 class TestTicketAPI:
     """Tests pour les routes /tickets."""
 
-    # TODO (TD03): Décommenter et implémenter les routes correspondantes
+    def test_create_ticket(self):
+        """POST /tickets/ doit créer un ticket."""
+        response = client.post(
+            "/tickets/",
+            json={
+                "title": "Bug urgent",
+                "description": "L'appli plante",
+                "creator_id": "user-123",
+            },
+        )
+        assert response.status_code == 201
+        data = response.json()
+        assert data["title"] == "Bug urgent"
+        assert data["status"] == "Open"
+        assert "id" in data
 
-    # def test_create_ticket(self):
-    #     """POST /tickets/ doit créer un ticket."""
-    #     response = client.post(
-    #         "/tickets/",
-    #         json={"title": "Bug urgent", "description": "L'appli plante"},
-    #     )
-    #     assert response.status_code == 201
-    #     data = response.json()
-    #     assert data["title"] == "Bug urgent"
-    #     assert data["status"] == "open"
-    #     assert "id" in data
-
-    # def test_list_tickets(self):
-    #     """GET /tickets/ doit retourner la liste des tickets."""
-    #     response = client.get("/tickets/")
-    #     assert response.status_code == 200
-    #     assert isinstance(response.json(), list)
+    def test_list_tickets(self):
+        """GET /tickets/ doit retourner la liste des tickets."""
+        response = client.get("/tickets/")
+        assert response.status_code == 200
+        assert isinstance(response.json(), list)
 
     # def test_get_ticket_by_id(self):
     #     """GET /tickets/{id} doit retourner un ticket spécifique."""
@@ -60,7 +62,7 @@ class TestTicketAPI:
     #         json={"title": "Test", "description": "Desc"},
     #     )
     #     ticket_id = create_response.json()["id"]
-    #
+
     #     # Puis le récupérer
     #     response = client.get(f"/tickets/{ticket_id}")
     #     assert response.status_code == 200
