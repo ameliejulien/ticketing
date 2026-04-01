@@ -68,10 +68,10 @@ class TestTicketAPI:
     #     assert response.status_code == 200
     #     assert response.json()["id"] == ticket_id
 
-    # def test_get_nonexistent_ticket_returns_404(self):
-    #     """GET /tickets/{id} avec un ID inexistant doit retourner 404."""
-    #     response = client.get("/tickets/nonexistent-id")
-    #     assert response.status_code == 404
+    def test_get_nonexistent_ticket_returns_404(self):
+        """GET /tickets/{id} avec un ID inexistant doit retourner 404."""
+        response = client.get("/tickets/nonexistent-id")
+        assert response.status_code == 404
 
 
 class TestUserAPI:
@@ -80,6 +80,7 @@ class TestUserAPI:
     def test_create_user(self):
         """POST /users/ doit créer un utilisateur."""
         import uuid
+
         unique_username = f"alice-{uuid.uuid4().hex[:6]}"
         response = client.post(
             "/users/",
@@ -95,6 +96,7 @@ class TestUserAPI:
     def test_create_agent(self):
         """POST /users/ doit pouvoir créer un agent."""
         import uuid
+
         unique_username = f"agent-bob-{uuid.uuid4().hex[:6]}"
         response = client.post(
             "/users/",
@@ -106,6 +108,7 @@ class TestUserAPI:
     def test_create_duplicate_user_returns_400(self):
         """POST /users/ avec un username existant doit retourner 400."""
         import uuid
+
         unique_username = f"dupuser-{uuid.uuid4().hex[:6]}"
         client.post("/users/", json={"username": unique_username})
         response = client.post("/users/", json={"username": unique_username})
