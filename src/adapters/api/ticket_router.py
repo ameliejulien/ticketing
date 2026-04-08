@@ -42,6 +42,12 @@ class TicketOut(BaseModel):
     description: str
     status: str
 
+    class AssignmentIn(BaseModel):
+        agent_id: str
+
+    class StartTicketIn(BaseModel):
+        agent_id: str
+
 
 # Import de la factory du cas d'usage depuis la racine de composition
 # Ceci évite les imports circulaires et garde l'injection de dépendances propre
@@ -106,3 +112,48 @@ async def list_tickets():
         )
         for ticket in tickets
     ]
+
+
+# @router.patch("/{ticket_id}/assign", response_model=TicketOut)
+# async def assign_ticket(ticket_id: str, assignment: AssignmentIn):
+#     from src.domain.exceptions import TicketNotFoundError
+#     from src.main import get_assign_ticket_usecase
+
+#     try:
+#         usecase = get_assign_ticket_usecase()
+#         ticket = usecase.execute(ticket_id=ticket_id, agent_id=assignment.agent_id)
+
+#         return TicketOut(
+#             id=ticket.id,
+#             title=ticket.title,
+#             description=ticket.description,
+#             status=ticket.status.value,
+#         )
+
+#     except TicketNotFoundError as e:
+#         raise HTTPException(status_code=404, detail=str(e)) from e
+
+#     except ValueError as e:
+#         raise HTTPException(status_code=400, detail=str(e)) from e
+
+# @router.patch("/{ticket_id}/start", response_model=TicketOut)
+# async def start_ticket(ticket_id: str, data: StartTicketIn):
+#     from src.domain.exceptions import TicketNotFoundError
+#     from src.main import get_start_ticket_usecase
+
+#     try:
+#         usecase = get_start_ticket_usecase()
+#         ticket = usecase.execute(ticket_id=ticket_id, agent_id=data.agent_id)
+
+#         return TicketOut(
+#             id=ticket.id,
+#             title=ticket.title,
+#             description=ticket.description,
+#             status=ticket.status.value,
+#         )
+
+#     except TicketNotFoundError as e:
+#         raise HTTPException(status_code=404, detail=str(e)) from e
+
+#     except ValueError as e:
+#         raise HTTPException(status_code=400, detail=str(e)) from e

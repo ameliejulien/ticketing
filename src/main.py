@@ -16,11 +16,13 @@ from src.adapters.api.ticket_router import router as ticket_router
 from src.adapters.api.user_router import router as user_router
 from src.adapters.db.ticket_repository_inmemory import InMemoryTicketRepository
 from src.adapters.db.user_repository_inmemory import InMemoryUserRepository
+from src.adapters.system_clock import SystemClock
 from src.application.usecases.assign_ticket import AssignTicketUseCase
 from src.application.usecases.create_ticket import CreateTicketUseCase
 from src.application.usecases.create_user import CreateUserUseCase
 from src.application.usecases.list_tickets import ListTicketsUseCase
 from src.application.usecases.list_user import ListUsersUseCase
+from src.application.usecases.start_ticket import StartTicketUseCase
 
 app = FastAPI(title="Ticketing Starter")
 
@@ -46,7 +48,7 @@ def get_list_tickets_usecase() -> ListTicketsUseCase:
 
 
 def get_assign_ticket_usecase() -> AssignTicketUseCase:
-    return AssignTicketUseCase(ticket_repository)
+    return AssignTicketUseCase(ticket_repo=ticket_repository, clock=clock)
 
 
 def get_create_user_usecase() -> CreateUserUseCase:
@@ -55,6 +57,10 @@ def get_create_user_usecase() -> CreateUserUseCase:
 
 def get_list_users_usecase() -> ListUsersUseCase:
     return ListUsersUseCase(user_repository)
+
+
+def get_start_ticket_usecase() -> StartTicketUseCase:
+    return StartTicketUseCase(ticket_repo=ticket_repository, clock=clock)
 
 
 # --- Routes ---
@@ -66,3 +72,6 @@ app.include_router(user_router)
 def root():
     """Route racine pour vérifier que l'API fonctionne."""
     return {"status": "ok"}
+
+
+clock = SystemClock()
