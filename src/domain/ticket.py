@@ -41,10 +41,14 @@ class Ticket:
         Status.CLOSED: [Status.IN_PROGRESS],
     }
 
-    def assign(self, user_id: str):
-        if self.status == Status.CLOSED:
-            raise ValueError("Un ticket fermé ne peut plus être modifié")
-        self.assignee_id = user_id
+    def assign(self, agent_id: str, current_time):
+        if self.status != Status.OPEN:
+            raise ValueError("Cannot assign a ticket that is not open")
+
+        if self.assigned_to is not None:
+            raise ValueError("Ticket already assigned")
+
+        self.assigned_to = agent_id
 
     def close(self):
         if self.status == Status.CLOSED:
