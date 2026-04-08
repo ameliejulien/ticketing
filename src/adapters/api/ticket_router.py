@@ -6,7 +6,7 @@ C'est un adaptateur "primaire" (ou "driving") : il reçoit les requêtes
 de l'extérieur et appelle les cas d'usage de l'application.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/tickets", tags=["tickets"])
@@ -42,11 +42,13 @@ class TicketOut(BaseModel):
     description: str
     status: str
 
-    class AssignmentIn(BaseModel):
-        agent_id: str
 
-    class StartTicketIn(BaseModel):
-        agent_id: str
+class AssignmentIn(BaseModel):
+    agent_id: str
+
+
+class StartTicketIn(BaseModel):
+    agent_id: str
 
 
 # Import de la factory du cas d'usage depuis la racine de composition
@@ -114,46 +116,47 @@ async def list_tickets():
     ]
 
 
-# @router.patch("/{ticket_id}/assign", response_model=TicketOut)
-# async def assign_ticket(ticket_id: str, assignment: AssignmentIn):
-#     from src.domain.exceptions import TicketNotFoundError
-#     from src.main import get_assign_ticket_usecase
+@router.patch("/{ticket_id}/assign", response_model=TicketOut)
+async def assign_ticket(ticket_id: str, assignment: AssignmentIn):
+    from src.domain.exceptions import TicketNotFoundError
+    from src.main import get_assign_ticket_usecase
 
-#     try:
-#         usecase = get_assign_ticket_usecase()
-#         ticket = usecase.execute(ticket_id=ticket_id, agent_id=assignment.agent_id)
+    try:
+        usecase = get_assign_ticket_usecase()
+        ticket = usecase.execute(ticket_id=ticket_id, agent_id=assignment.agent_id)
 
-#         return TicketOut(
-#             id=ticket.id,
-#             title=ticket.title,
-#             description=ticket.description,
-#             status=ticket.status.value,
-#         )
+        return TicketOut(
+            id=ticket.id,
+            title=ticket.title,
+            description=ticket.description,
+            status=ticket.status.value,
+        )
 
-#     except TicketNotFoundError as e:
-#         raise HTTPException(status_code=404, detail=str(e)) from e
+    except TicketNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e)) from e
 
-#     except ValueError as e:
-#         raise HTTPException(status_code=400, detail=str(e)) from e
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
-# @router.patch("/{ticket_id}/start", response_model=TicketOut)
-# async def start_ticket(ticket_id: str, data: StartTicketIn):
-#     from src.domain.exceptions import TicketNotFoundError
-#     from src.main import get_start_ticket_usecase
 
-#     try:
-#         usecase = get_start_ticket_usecase()
-#         ticket = usecase.execute(ticket_id=ticket_id, agent_id=data.agent_id)
+@router.patch("/{ticket_id}/start", response_model=TicketOut)
+async def start_ticket(ticket_id: str, data: StartTicketIn):
+    from src.domain.exceptions import TicketNotFoundError
+    from src.main import get_start_ticket_usecase
 
-#         return TicketOut(
-#             id=ticket.id,
-#             title=ticket.title,
-#             description=ticket.description,
-#             status=ticket.status.value,
-#         )
+    try:
+        usecase = get_start_ticket_usecase()
+        ticket = usecase.execute(ticket_id=ticket_id, agent_id=data.agent_id)
 
-#     except TicketNotFoundError as e:
-#         raise HTTPException(status_code=404, detail=str(e)) from e
+        return TicketOut(
+            id=ticket.id,
+            title=ticket.title,
+            description=ticket.description,
+            status=ticket.status.value,
+        )
 
-#     except ValueError as e:
-#         raise HTTPException(status_code=400, detail=str(e)) from e
+    except TicketNotFoundError as e:
+        raise HTTPException(status_code=404, detail=str(e)) from e
+
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
