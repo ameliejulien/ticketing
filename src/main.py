@@ -31,6 +31,8 @@ app = FastAPI(title="Ticketing Starter")
 ticket_repository = InMemoryTicketRepository()
 user_repository = InMemoryUserRepository()
 
+clock = SystemClock()
+
 
 # Fonctions factory pour les cas d'usage (FastAPI les appellera via Depends)
 def get_create_ticket_usecase() -> CreateTicketUseCase:
@@ -72,6 +74,3 @@ app.include_router(user_router)
 def root():
     """Route racine pour vérifier que l'API fonctionne."""
     return {"status": "ok"}
-
-
-clock = SystemClock()

@@ -24,7 +24,7 @@ class StartTicketUseCase:
         ticket.start(agent_id, started_at)
 
         # Enregistrer
-        self.ticket_repo.save(ticket)
+        updated_ticket = self.ticket_repo.save(ticket)
 
         # Retourner
-        return ticket
+        return updated_ticket

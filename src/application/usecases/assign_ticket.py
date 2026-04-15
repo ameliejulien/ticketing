@@ -6,6 +6,7 @@ Ce use case gère l'assignation d'un ticket existant à un agent.
 
 from src.domain.exceptions import TicketNotFoundError
 from src.domain.ticket import Ticket
+from src.ports.clock import Clock
 from src.ports.ticket_repository import TicketRepository
 
 
@@ -14,7 +15,7 @@ class AssignTicketUseCase:
     Cas d'usage pour assigner un ticket à un agent.
     """
 
-    def __init__(self, ticket_repo: TicketRepository):
+    def __init__(self, ticket_repo: TicketRepository, clock: Clock):
         """
         Initialise le use case.
 
@@ -22,6 +23,7 @@ class AssignTicketUseCase:
             ticket_repo: Le repository de tickets
         """
         self.ticket_repo = ticket_repo
+        self.clock = clock
 
     def execute(self, ticket_id: str, agent_id: str) -> Ticket:
         """
@@ -42,7 +44,8 @@ class AssignTicketUseCase:
         if ticket is None:
             raise TicketNotFoundError(f"Ticket with ID {ticket_id} not found.")
 
-        ticket.assign(agent_id)
+        current_time = self.clock.now()
+        ticket.assign(agent_id, current_time)
 
         updated_ticket = self.ticket_repo.save(ticket)
 

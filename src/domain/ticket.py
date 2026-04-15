@@ -38,17 +38,17 @@ class Ticket:
         Status.OPEN: [Status.IN_PROGRESS],
         Status.IN_PROGRESS: [Status.RESOLVED],
         Status.RESOLVED: [Status.CLOSED, Status.IN_PROGRESS],
-        Status.CLOSED: [Status.IN_PROGRESS],
     }
 
-    def assign(self, agent_id: str, current_time):
-        if self.status != Status.OPEN:
-            raise ValueError("Cannot assign a ticket that is not open")
-
-        if self.assigned_to is not None:
+    def assign(self, agent_id: str, updated_at=None) -> None:
+        if self.status != Status.CLOSED and self.status == Status.CLOSED:
+            raise ValueError("Cannot assign a closed ticket")
+        if self.status == Status.CLOSED:
+            raise ValueError("Un ticket fermé ne peut plus être modifié")
+        if self.assignee_id is not None:
             raise ValueError("Ticket already assigned")
-
-        self.assigned_to = agent_id
+        self.assignee_id = agent_id
+        self.updated_at = updated_at or _now_utc()
 
     def close(self):
         if self.status == Status.CLOSED:
@@ -64,7 +64,7 @@ class Ticket:
 
     def start(self, agent_id: str, started_at: datetime) -> None:
         if self.assignee_id is None:
-            raise TicketNotAssignedError("Ticket must be assigned before starting")
+            raise TicketNotAssignedError("Ticket is unassigned")
         if self.assignee_id != agent_id:
             raise WrongAgentError(
                 f"Only agent {self.assignee_id} can start this ticket, not {agent_id}"

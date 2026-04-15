@@ -141,7 +141,11 @@ async def assign_ticket(ticket_id: str, assignment: AssignmentIn):
 
 @router.patch("/{ticket_id}/start", response_model=TicketOut)
 async def start_ticket(ticket_id: str, data: StartTicketIn):
-    from src.domain.exceptions import TicketNotFoundError
+    from src.domain.exceptions import (
+        TicketNotAssignedError,
+        TicketNotFoundError,
+        WrongAgentError,
+    )
     from src.main import get_start_ticket_usecase
 
     try:
@@ -160,3 +164,25 @@ async def start_ticket(ticket_id: str, data: StartTicketIn):
 
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
+
+    except TicketNotAssignedError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
+    except WrongAgentError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
+
+@router.get("/{ticket_id}", response_model=TicketOut)
+async def get_ticket(ticket_id: str):
+    from src.main import ticket_repository
+
+    repo = ticket_repository
+    ticket = repo.get(ticket_id)
+    if ticket is None:
+        raise HTTPException(status_code=404, detail=f"Ticket {ticket_id} not found")
+    return TicketOut(
+        id=ticket.id,
+        title=ticket.title,
+        description=ticket.description,
+        status=ticket.status.value,
+    )

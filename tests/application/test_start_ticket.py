@@ -22,7 +22,7 @@ class TestStartTicketUseCase:
         self.fixed_time = datetime(2026, 1, 16, 14, 30, 0, tzinfo=timezone.utc)
         self.clock = FixedClock(self.fixed_time)
         self.create_use_case = CreateTicketUseCase(self.repo)
-        self.assign_use_case = AssignTicketUseCase(self.repo)
+        self.assign_use_case = AssignTicketUseCase(self.repo, self.clock)
         self.start_use_case = StartTicketUseCase(self.repo, self.clock)
 
     def test_start_ticket_success(self):

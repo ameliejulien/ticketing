@@ -18,7 +18,16 @@ class TestAssignTicketUseCase:
         """Initialise le repository et les use cases."""
         self.repo = InMemoryTicketRepository()
         self.create_use_case = CreateTicketUseCase(self.repo)
-        self.assign_use_case = AssignTicketUseCase(self.repo)
+
+        class FakeClock:
+            def now(self):
+                import datetime
+
+                return datetime.datetime.now()
+
+        self.clock = FakeClock()
+
+        self.assign_use_case = AssignTicketUseCase(self.repo, self.clock)
 
     def test_assign_ticket_success(self):
         """Doit assigner un ticket à un agent."""
@@ -67,7 +76,16 @@ class TestAssignTicketUseCase:
         """Créer puis assigner un ticket en utilisant le repo SQLite."""
         repo = sqlite_ticket_repo
         create_uc = CreateTicketUseCase(repo)
-        assign_uc = AssignTicketUseCase(repo)
+
+        class FakeClock:
+            def now(self):
+                import datetime
+
+                return datetime.datetime.now()
+
+        clock = FakeClock()
+
+        assign_uc = AssignTicketUseCase(repo, clock)
 
         ticket = create_uc.execute(
             title="Nouvelle fonctionnalité",
